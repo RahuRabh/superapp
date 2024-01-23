@@ -14,10 +14,8 @@ const Genre = () => {
   };
 
   const handlebutton = () => {
-    if (category.length > 3){
+    if (category.length >= 3){
       localStorage.setItem("selectedCategory", JSON.stringify(category));
-      const selectedCategory = JSON.parse(localStorage.getItem("selectedCategory"));
-      console.log(selectedCategory);
       navigate("/home");
     }
   }

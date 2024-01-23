@@ -60,7 +60,7 @@ function Register() {
     // }
 
     if (isvalid) {
-      localStorage.setItem("userData", formData);
+      localStorage.setItem("userData", JSON.stringify(formData));
       navigate("/genre");
     }
   };
