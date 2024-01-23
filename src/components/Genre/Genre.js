@@ -2,15 +2,25 @@ import React, { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import minimum from "../../assets/icons/minimum.png";
 import { genre } from "../../genre";
+import { useNavigate } from "react-router-dom";
 
 const Genre = () => {
+
+  const navigate = useNavigate()
   const [category, setcategory] = useState([]);
 
   const handleClick = (items) => {
-    // if (category.length < 3) {
       setcategory((prevCategory) => [...prevCategory, items.id]);
-    // }
   };
+
+  const handlebutton = () => {
+    if (category.length > 3){
+      localStorage.setItem("selectedCategory", JSON.stringify(category));
+      const selectedCategory = JSON.parse(localStorage.getItem("selectedCategory"));
+      console.log(selectedCategory);
+      navigate("/home");
+    }
+  }
 
   return (
     <div
@@ -70,7 +80,7 @@ const Genre = () => {
             );
           })}
         </div>
-        <button className="bg-[#148A08] w-48 h-14 text-white text-center font-medium text-2xl rounded-[38px] absolute bottom-10 right-[120px]">
+        <button onClick={handlebutton} className="bg-[#148A08] w-48 h-14 text-white text-center font-medium text-2xl rounded-[38px] absolute bottom-10 right-[120px]">
           Next Page
         </button>
       </div>
