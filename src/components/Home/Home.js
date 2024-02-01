@@ -5,8 +5,12 @@ import temp from "../../assets/icons/temp.png";
 import wind from "../../assets/icons/wind.png";
 import humidity from "../../assets/icons/humidity.png";
 import line from "../../assets/icons/Line.png";
+
 export default function Home() {
   const [info, setInfo] = useState([]);
+  const [news, setNews] = useState([])
+  const [currentNewsIndex, CurrentNewsIndex] = useState(0)
+
   const userData = JSON.parse(localStorage.getItem("userData"));
   const Category = JSON.parse(localStorage.getItem("selectedCategory"));
 
@@ -22,12 +26,46 @@ export default function Home() {
     fetchData()
   }, []);
 
+  useEffect(() => {
+    const fetchNews = async () =>{
+      const response = await fetch("https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=f8147fd8473f446d8b604f2ed4d6bb5a")
+      const newsData = await response.json();
+      setNews(newsData)
+    }
+    fetchNews()
+  }, [])
+
+  console.log(news);
+
+  useEffect(() => {
+    if(news){
+      const interval = setInterval(() => {
+        CurrentNewsIndex((currentNewsIndex + 1) % news.articles.length)
+      }, 30000)
+
+      return () => clearInterval(interval)
+    }
+  }, [news, currentNewsIndex])
+
+  const formateDandT = (string) => {
+    const date = new Date(string)
+    const options = {
+      month: "2-digit",
+      day:"2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }
+    return date.toLocaleDateString("en-US", options)
+  }
+
   return (
     <div className="flex bg-black">
       <div className="left w-[900px] ml-20">
         <div className="left-content flex h-[550px] m-10 bg-[#5746EA] rounded-[33px]">
           <div className="m-5">
-            <img src={userimg} alt="kdjk" className="w-52 h-[450px]" />
+            <img src={userimg} alt="UserImage" className="w-52 h-[450px]" />
           </div>
           <div className="m-14">
             <h1 className="text-white text-4xl leading-9 tracking-wide">
@@ -97,7 +135,24 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="right w-[450px] h-[890px] ml-24 mt-10 bg-blue-400"></div>
+      <div className="right w-[500px] h-[890px] ml-24 mt-10 flex flex-col rounded-2xl overflow-auto">
+        {news.articles &&
+        <div className="flex flex-col rounded-2xl">
+        <div className="w-full h-[600px] relative">
+          <img src={news.articles[currentNewsIndex].urlToImage}
+           className="w-full h-full"
+          />
+          <div className="absolute bottom-0 bg-black z-1 opacity-70 w-full h-[250px]">
+          <h3 className="text-white font-medium text-3xl leading-9 tracking-wide px-6 pt-4">{news.articles[currentNewsIndex].title}</h3>
+          <h3 className="text-white font-semibold text-xl leading-5 pt-4 px-6">{formateDandT(news.articles[currentNewsIndex].publishedAt)}</h3>
+        </div>
+        </div>
+        <div className="h-[350px] bg-white">
+        <h5 className="text-black text-xl leading-8 tracking-wide p-6">{news.articles[currentNewsIndex].content}</h5>
+        </div>
+        </div>
+        }
+    </div>
     </div>
   );
 }
