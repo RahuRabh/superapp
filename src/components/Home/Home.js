@@ -5,17 +5,21 @@ import temp from "../../assets/icons/temp.png";
 import wind from "../../assets/icons/wind.png";
 import humidity from "../../assets/icons/humidity.png";
 import line from "../../assets/icons/Line.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+
+  const navigate = useNavigate()
   const [info, setInfo] = useState([]);
   const [news, setNews] = useState([]);
   const [currentNewsIndex, CurrentNewsIndex] = useState(0);
+  const [note, setnote] = useState("");
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const Category = JSON.parse(localStorage.getItem("selectedCategory"));
 
   const apikey = "437bde48dfbc44d491580708242301";
-  const location = "28.644800,77.216721"; // London, UK
+  const location = "28.644800,77.216721";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,8 +43,6 @@ export default function Home() {
     fetchNews();
   }, []);
 
-  console.log(news);
-
   useEffect(() => {
     if (news) {
       const interval = setInterval(() => {
@@ -62,6 +64,12 @@ export default function Home() {
       hour12: true,
     };
     return date.toLocaleDateString("en-US", options);
+  };
+
+  const handleInput = (event) => {
+    setnote(event.target.value);
+    //saving notes in the local storage
+    localStorage.setItem("notes", JSON.stringify(note));
   };
 
   return (
@@ -141,13 +149,23 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="timer w-[1005px] h-[310px] bg-[#1E2343] rounded-[19px] ml-10 mt-10 mb-20"></div>
+
+        <div className="timer flex w-[1005px] h-[310px] bg-[#1E2343] rounded-[19px] ml-10 mt-10 mb-20">
+              <div className="watch w-1/2 bg-white">
+              </div>
+              <div className="timer flex w-1/2">
+                <button className="w-full h-12 text-white bg-[#FF6A6A] text-3xl leading-8 rounded-[20px] text-center">Start</button>
+              </div>
+        </div>
       </div>
-      <div className="note w-[470px] h-[535px] bg-[#F1C75B] rounded-[19px] mt-10 ml-14">
-        <p className="font-semibold text-4xl m-10">All Notes</p>
-        <p className="text-xl ml-10 overflow-auto">
-          This is how I am going to learn MERN Stack in next 3 months
-        </p>
+
+      <div className="note w-[470px] h-[540px] bg-[#F1C75B] rounded-[19px] mt-10 ml-14">
+        <p className="font-semibold text-4xl mx-10 mt-10">All Notes</p>
+        <textarea
+          className="bg-[#F1C75B] mt-10 mx-10 p-5 text-[21px] leading-7 tracking-tighter w-[430px] h-[400px] ml-5 start-0"
+          onChange={handleInput}
+          value={note}
+        />
       </div>
       <div className="right w-[500px] h-[890px] ml-24 mt-10 flex flex-col rounded-2xl overflow-hidden">
         {news.articles && (
@@ -176,9 +194,11 @@ export default function Home() {
         )}
       </div>
       <button
-        onClick={() => {}}
+        onClick={() => navigate('/mo')}
         className="bg-[#148A08] w-48 h-14 text-white text-center font-medium text-2xl rounded-[38px] bottom-[-60px] mb-5 absolute right-[40px]"
-      >Browse</button>
+      >
+        Browse
+      </button>
     </div>
   );
 }
