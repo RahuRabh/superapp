@@ -194,7 +194,7 @@ export default function Home() {
         )}
       </div>
       <button
-        onClick={() => navigate('/mo')}
+        onClick={() => navigate('/browse')}
         className="bg-[#148A08] w-48 h-14 text-white text-center font-medium text-2xl rounded-[38px] bottom-[-60px] mb-5 absolute right-[40px]"
       >
         Browse
